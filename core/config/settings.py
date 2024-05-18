@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'core.apps.common.apps.CommonConfig',
     'core.apps.general.apps.GeneralConfig',
     'core.apps.minor.apps.MinorConfig',
+    'core.apps.users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -113,6 +114,8 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+AUTH_USER_MODEL = "users.CustomUser"
 
 
 # Static files (CSS, JavaScript, Images)
