@@ -121,10 +121,10 @@ class TelegramUser(models.Model):
         return f"@{self.username}" if self.username is not None else f"{self.user_id}"
 
     @classmethod
-    async def get_user_and_created(cls, update: Update, context: CallbackContext):
+    def get_user_and_created(cls, update: Update, context: CallbackContext):
         """python-telegram-bot's Update, Context --> User instance"""
         data = extract_user_data_from_update(update)
-        u, created = await cls.objects.aupdate_or_create(user_id=data["user_id"], defaults=data)
+        u, created = cls.objects.update_or_create(user_id=data["user_id"], defaults=data)
 
         if created:
             # Save deep_link to User model
@@ -137,6 +137,11 @@ class TelegramUser(models.Model):
                     u.save()
 
         return u, created
+    
+    @classmethod
+    def get_user(cls, update: Update, context: CallbackContext):
+        u, _ = cls.get_user_and_created(update, context)
+        return u
 
 
 def extract_user_data_from_update(update: Update):

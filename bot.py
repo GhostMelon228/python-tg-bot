@@ -11,7 +11,6 @@ from bot.dispatcher import setup_dispatcher
 
 
 def run_polling(tg_token: str = TELEGRAM_TOKEN):
-    """ Run bot in polling mode """
     updater = Updater(tg_token, use_context=True)
 
     dp = updater.dispatcher

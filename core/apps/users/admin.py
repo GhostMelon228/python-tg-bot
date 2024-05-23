@@ -77,11 +77,13 @@ class CustomUserAdmin(UserAdmin):
 class TelegramUserAdmin(admin.ModelAdmin):
     list_display = (
         "id",
+        "username",
         "user_id",
         "custom_user",
     )
     list_display_links = (
         "id",
+        "username",
         "user_id",
         "custom_user",
     )
