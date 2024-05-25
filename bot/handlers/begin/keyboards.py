@@ -28,7 +28,7 @@ def make_keyboard_for_first_start_command(grades: QuerySet[Grade]) -> InlineKeyb
     if button_start:
 
         buttons.append([InlineKeyboardButton(
-            text=f"Далее", callback_data=CALLBACK_START_SOLUTION)])
+            text=f"Далее", callback_data=CALLBACK_START_SOLVING)])
         
 
     return InlineKeyboardMarkup(buttons)
@@ -44,7 +44,7 @@ def make_keyboard_for_used_start_command() -> InlineKeyboardMarkup:
     
     buttons.append([InlineKeyboardButton(
         text=start_not_created_for_solution_button,
-        callback_data=CALLBACK_START_SOLUTION
+        callback_data=CALLBACK_START_SOLVING
     )])
 
     return InlineKeyboardMarkup(buttons)
