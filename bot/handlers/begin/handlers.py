@@ -2,8 +2,7 @@ from telegram import ParseMode, Update
 from telegram.ext import CallbackContext
 from django.db.models import Prefetch
 
-from core.apps.users.models import extract_user_data_from_update
-from core.apps.users.models import TelegramUser
+from core.apps.users.models import TelegramUser, extract_user_data_from_update
 from core.apps.common.models import ConnectionUserGrade
 from core.apps.minor.models import Grade
 
@@ -32,7 +31,8 @@ def command_start(update: Update, context: CallbackContext):
         reply_markup = make_keyboard_for_used_start_command()
 
     
-    update.message.reply_text(text=text,
+    update.message.reply_text(
+        text=text,
         reply_markup=reply_markup
     )
 
@@ -44,15 +44,11 @@ def get_atr_grade(update: Update):
     grade = Grade.objects.get(id=grade_id)
     user = TelegramUser.objects.get(user_id=user_id)
     text = static_text.start_created.format(first_name=user.first_name)
-    return user_id, text, grade, user
+    return user_id, text, user, grade
 
 
 def grade_create(update: Update, context: CallbackContext) -> None:
-    user_id = extract_user_data_from_update(update)['user_id']
-    grade_id = update.callback_query.data.split('_')[-1]
-    grade = Grade.objects.get(id=grade_id)
-    user = TelegramUser.objects.get(user_id=user_id)
-    print(user, grade)
+    user_id, text, user, grade = get_atr_grade(update)
 
     user_grade = ConnectionUserGrade.objects.create(user=user, grade=grade)
     user_grade.save()
@@ -71,7 +67,7 @@ def grade_create(update: Update, context: CallbackContext) -> None:
     )
 
 def grade_delete(update: Update, context: CallbackContext) -> None:
-    user_id, text, grade, user = get_atr_grade(update)
+    user_id, text, user, grade = get_atr_grade(update)
 
     user_grade = ConnectionUserGrade.objects.get(user=user, grade=grade)
     user_grade.delete()
@@ -88,4 +84,19 @@ def grade_delete(update: Update, context: CallbackContext) -> None:
         message_id=update.callback_query.message.message_id,
         parse_mode=ParseMode.HTML,
         reply_markup=make_keyboard_for_first_start_command(grades)
+    )
+
+def main_menu(update: Update, context: CallbackContext) -> None:
+    user = TelegramUser.get_user(update, context)
+
+    user_id = extract_user_data_from_update(update)['user_id']
+
+    context.user_data.pop("subject_id", None)
+
+    context.bot.edit_message_text(
+        text=static_text.start_not_created.format(first_name=user.first_name),
+        chat_id=user_id,
+        message_id=update.callback_query.message.message_id,
+        parse_mode=ParseMode.HTML,
+        reply_markup=make_keyboard_for_used_start_command()
     )
