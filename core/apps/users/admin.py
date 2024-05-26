@@ -38,7 +38,6 @@ class CustomUserAdmin(UserAdmin):
                     "first_name",
                     "last_name",
                     "email",
-                    "icon",
                     "is_staff",
                     "is_active",
                     "is_superuser",
