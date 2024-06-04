@@ -1,5 +1,5 @@
 from django.contrib import admin
-from core.apps.common.models import ConnectionUserGrade, FavouriteTasks, UserAnswer
+from core.apps.common.models import ConnectionUserGrade, FavouriteTasks, UserAnswer, UsedUserTip
 
 class ConnectionUserGradeAdmin(admin.ModelAdmin):
     list_display = ("pk", "user", "grade")
@@ -16,6 +16,12 @@ class UserTriesAdmin(admin.ModelAdmin):
     list_display_links = ("pk", "user", "task", "status")
     search_fields = ("pk", "user", "task", "status")
 
+class UsedUserTipAdmin(admin.ModelAdmin):
+    list_display = ("pk", "user", "task")
+    list_display_links = ("pk", "user", "task")
+    search_fields = ("pk", "user", "task")
+
 admin.site.register(ConnectionUserGrade, ConnectionUserGradeAdmin)
 admin.site.register(FavouriteTasks, FavouriteTasksAdmin)
 admin.site.register(UserAnswer, UserTriesAdmin)
+admin.site.register(UsedUserTip, UsedUserTipAdmin)

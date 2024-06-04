@@ -55,3 +55,21 @@ class UserAnswer(BaseModel):
 
     def __str__(self):
         return f"Попытка {self.pk}"
+    
+class UsedUserTip(BaseModel):
+    user = models.ForeignKey(
+        TelegramUser, on_delete= models.PROTECT,
+        verbose_name="Пользователь", related_name="using_tip"
+    )
+    task = models.ForeignKey(
+        Task, on_delete=models.PROTECT,
+        verbose_name="Задание", related_name="using_tip"
+    )
+
+    class Meta:
+        verbose_name = "Задание с подсказкой"
+        verbose_name_plural = "Задания с подсказкой"
+        ordering = ["pk"]
+
+    def __str__(self):
+        return self.pk
