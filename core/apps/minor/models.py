@@ -46,6 +46,9 @@ class Olympiad(BaseModel):
     grades = models.ManyToManyField(
         Grade, verbose_name="Классы"
     )
+    tasks_in_variant = models.IntegerField(
+        verbose_name="Количество заданий в варианте"
+    )
 
     class Meta:
         verbose_name = "Олимпиада"

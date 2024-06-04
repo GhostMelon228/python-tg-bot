@@ -8,9 +8,9 @@ class GradeAdmin(admin.ModelAdmin):
     search_fields = ("pk", "title")
 
 class OlympiadAdmin(admin.ModelAdmin):
-    list_display = ("pk", "title", "description")
-    list_display_links = ("pk", "title", "description")
-    search_fields = ("pk", "title", "description")
+    list_display = ("pk", "title", "description", "tasks_in_variant")
+    list_display_links = ("pk", "title", "description", "tasks_in_variant")
+    search_fields = ("pk", "title", "description", "tasks_in_variant")
 
 class SolveMethodAdmin(admin.ModelAdmin):
     list_display = ("pk", "title")
