@@ -36,7 +36,7 @@ def make_keyboard_for_task(queryset, task, callback, used_tip) -> InlineKeyboard
         buttons.append(
             [InlineKeyboardButton(
                 text=text_add_tip,
-                callback_data=CALLBACK_ADD_TIP
+                callback_data=CALLBACK_ADD_TIP.format(pk = task)
             )]
         )
 

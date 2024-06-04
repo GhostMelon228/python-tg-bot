@@ -70,7 +70,7 @@ class Year(BaseModel):
     def __str__(self):
         return self.number
     
-class SolveMetod(BaseModel):
+class SolveMethod(BaseModel):
     title = models.CharField(
         verbose_name="Название", max_length=90,
     )
@@ -98,8 +98,8 @@ class Task(BaseModel):
     )
     olympiad = models.ForeignKey(
         Olympiad, on_delete=models.PROTECT, verbose_name="Олимпиада", related_name="tasks")
-    solve_metod = models.ForeignKey(
-        SolveMetod, on_delete=models.PROTECT, verbose_name="Метод решения", related_name="tasks")
+    solve_method = models.ForeignKey(
+        SolveMethod, on_delete=models.PROTECT, verbose_name="Метод решения", related_name="tasks")
     year = models.ForeignKey(
         Year, on_delete=models.PROTECT, verbose_name="Год", related_name="tasks")
     grade = models.ForeignKey(
@@ -124,4 +124,4 @@ class Task(BaseModel):
         ordering = ["pk"]
 
     def __str__(self):
-        return f"Задача № {self.pk}"
+        return f"Задача № {self.title}"

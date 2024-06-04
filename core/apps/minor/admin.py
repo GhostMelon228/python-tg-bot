@@ -1,5 +1,5 @@
 from django.contrib import admin
-from core.apps.minor.models import Grade, Olympiad, SolveMetod, Subject, Task, Year
+from core.apps.minor.models import Grade, Olympiad, SolveMethod, Subject, Task, Year
 
 
 class GradeAdmin(admin.ModelAdmin):
@@ -12,7 +12,7 @@ class OlympiadAdmin(admin.ModelAdmin):
     list_display_links = ("pk", "title", "description")
     search_fields = ("pk", "title", "description")
 
-class SolveMetodAdmin(admin.ModelAdmin):
+class SolveMethodAdmin(admin.ModelAdmin):
     list_display = ("pk", "title")
     list_display_links = ("pk", "title")
     search_fields = ("pk", "title")
@@ -23,9 +23,9 @@ class SubjectAdmin(admin.ModelAdmin):
     search_fields = ("pk", "title")
 
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ("pk", "title", "subject", "olympiad", "solve_metod", "year", "grade", "description", "tip", "answer", "solving")
-    list_display_links = ("pk", "title", "subject", "olympiad", "solve_metod", "year", "grade", "description", "tip", "answer", "solving")
-    search_fields = ("pk", "title", "subject", "olympiad", "solve_metod", "year", "grade", "description", "tip", "answer", "solving")
+    list_display = ("pk", "title", "subject", "olympiad", "solve_method", "year", "grade", "description", "tip", "answer", "solving")
+    list_display_links = ("pk", "title", "subject", "olympiad", "solve_method", "year", "grade", "description", "tip", "answer", "solving")
+    search_fields = ("pk", "title", "subject", "olympiad", "solve_method", "year", "grade", "description", "tip", "answer", "solving")
 
 class YearAdmin(admin.ModelAdmin):
     list_display = ("pk", "number")
@@ -35,7 +35,7 @@ class YearAdmin(admin.ModelAdmin):
 
 admin.site.register(Grade, GradeAdmin)
 admin.site.register(Olympiad, OlympiadAdmin)
-admin.site.register(SolveMetod, SolveMetodAdmin)
+admin.site.register(SolveMethod, SolveMethodAdmin)
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Task, TaskAdmin)
 admin.site.register(Year, YearAdmin)

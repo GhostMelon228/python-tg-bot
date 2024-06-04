@@ -22,6 +22,8 @@ def open_task(update: Update, context: CallbackContext) -> None:
     global text_condition_task
     text_condition_task = task.description
 
+    print(context.user_data)
+
     context.bot.edit_message_text(
         text=text_condition_task,
         chat_id=user_id,
@@ -29,6 +31,8 @@ def open_task(update: Update, context: CallbackContext) -> None:
         parse_mode=ParseMode.HTML,
         reply_markup=make_keyboard_for_task(queryset, task.id, callback, used_tip)
     )
+
+    return 0
 
 def add_tip(update: Update, context: CallbackContext) -> None:
 
@@ -51,6 +55,7 @@ def add_tip(update: Update, context: CallbackContext) -> None:
         parse_mode=ParseMode.HTML,
         reply_markup=make_keyboard_for_task(queryset, task.id, callback, used_tip)
     )
+
 '''
 def check_answer(update: Update, context: CallbackContext) -> None:
     user_answer = update.message.text.lower()
