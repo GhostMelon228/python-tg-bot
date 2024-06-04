@@ -1,7 +1,7 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from django.db.models import QuerySet
 
-from core.apps.minor.models import Subject, Olympiad, Year
+from core.apps.minor.models import Subject, Olympiad
 
 
 from bot.handlers.global_common.manage_data import CALLBACK_MAIN_MENU
@@ -69,22 +69,22 @@ def make_keyboard_for_groups_command(groups: QuerySet, olympiad, subject, anothe
             title = el.title
         buttons.append(
             [InlineKeyboardButton(
-                text = text_for_a_criteria_group.format(title = title),
+                text=text_for_a_criteria_group.format(title=title),
                 callback_data=CALLBACK_SELECT_GROUP.format(pk=el.id, from_="0")
             )]
         )
     
     buttons.append(
         [InlineKeyboardButton(
-            text = text_btn,
-            callback_data=CALLBACK_SELECT_OLYMPIAD.format(pk = olympiad, sort=another_sort)
+            text=text_btn,
+            callback_data=CALLBACK_SELECT_OLYMPIAD.format(pk=olympiad, sort=another_sort)
         )]
     )
     
     buttons.append(
         [InlineKeyboardButton(
             text=text_return_previous,
-            callback_data=CALLBACK_SELECT_SUBJECT.format(pk = subject)
+            callback_data=CALLBACK_SELECT_SUBJECT.format(pk=subject)
         )]
     )
     buttons.append(

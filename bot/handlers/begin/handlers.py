@@ -15,7 +15,7 @@ def command_start(update: Update, context: CallbackContext):
 
     user_grades = ConnectionUserGrade.objects.filter(user=user)
 
-    context.user_data.pop("subject_id", None)
+    context.user_data.clear()
 
     if not user_grades.exists():
         grades = Grade.objects.prefetch_related(Prefetch(
@@ -86,12 +86,18 @@ def grade_delete(update: Update, context: CallbackContext) -> None:
         reply_markup=make_keyboard_for_first_start_command(grades)
     )
 
+
+
+
+
 def main_menu(update: Update, context: CallbackContext) -> None:
     user = TelegramUser.get_user(update, context)
 
     user_id = extract_user_data_from_update(update)['user_id']
 
     context.user_data.pop("subject_id", None)
+    context.user_data.clear()
+    
 
     context.bot.edit_message_text(
         text=static_text.start_not_created.format(first_name=user.first_name),

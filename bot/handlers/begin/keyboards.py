@@ -9,7 +9,7 @@ from bot.handlers.begin.static_text import *
 
 def make_keyboard_for_first_start_command(grades: QuerySet[Grade]) -> InlineKeyboardMarkup:
     buttons = []
-    button_start = False
+    button_start = 0
 
     for grade in grades:
 
@@ -18,14 +18,14 @@ def make_keyboard_for_first_start_command(grades: QuerySet[Grade]) -> InlineKeyb
 
         if grade.connection_user_to_grade.all():
 
-            button_start = True
+            button_start += 1
             btn = SELECTED
             callback_data = CALLBACK_DELETE_GRADE.format(pk=grade.pk)
 
         buttons.append([InlineKeyboardButton(
             text=f"{grade.title} класс {btn}", callback_data=callback_data)])
 
-    if button_start:
+    if button_start == 1:
 
         buttons.append([InlineKeyboardButton(
             text=f"Далее", callback_data=CALLBACK_START_SOLVING)])
