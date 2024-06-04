@@ -72,4 +72,4 @@ class UsedUserTip(BaseModel):
         ordering = ["pk"]
 
     def __str__(self):
-        return self.pk
+        return f"{self.pk}"

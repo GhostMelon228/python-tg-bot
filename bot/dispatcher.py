@@ -42,10 +42,10 @@ def setup_dispatcher(dp):
         states={
             0:[CallbackQueryHandler(add_tip, pattern=r"UNLOCK_TIP_\d+"),
                CallbackQueryHandler(favourite_task_create, pattern=r"CREATE_FAVOURITE_TASK_\d+"),
-               CallbackQueryHandler(favourite_task_delete, pattern=r"DELETE_FAVOURITE_TASK_\d+"),
-               CallbackQueryHandler(create_list_tasks, pattern=r"OBJECT_\d+_\d+")]
+               CallbackQueryHandler(favourite_task_delete, pattern=r"DELETE_FAVOURITE_TASK_\d+")
+               ]
         },
-        fallbacks=[]
+        fallbacks=[CallbackQueryHandler(create_list_tasks, pattern=r"OBJECT_\d+_\d+")]
     ))
     dp.add_handler(CallbackQueryHandler(create_list_tasks, pattern=r"OBJECT_\d+_\d+")) #выбрать задание из сгрупированного списка
     return dp

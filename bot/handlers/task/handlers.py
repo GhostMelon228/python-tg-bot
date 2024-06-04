@@ -3,33 +3,38 @@ from telegram.ext import CallbackContext
 
 from core.apps.users.models import TelegramUser, extract_user_data_from_update
 from core.apps.minor.models import Task
-from core.apps.common.models import FavouriteTasks, UserAnswer
+from core.apps.common.models import FavouriteTasks, UserAnswer, UsedUserTip
 
 from bot.handlers.task.keyboards import *
 
 def open_task(update: Update, context: CallbackContext) -> None:
+    
     user_id = extract_user_data_from_update(update)['user_id']
     callback = context.user_data["callback_return_from_task"]
 
     task_id = update.callback_query.data.split('_')[-1]
     context.user_data["task_id"] = task_id
 
+
     task = Task.objects.get(id=task_id)
     user = TelegramUser.objects.get(user_id=user_id)
 
-    queryset = FavouriteTasks.objects.filter(user=user, task=task)
+    is_favourite_task = FavouriteTasks.objects.filter(user=user, task=task).exists()
+    is_used_tip = UsedUserTip.objects.filter(user=user, task=task).exists()
 
-    global text_condition_task
-    text_condition_task = task.description
+    text = task.description
+
+    if is_used_tip:
+        text += "\nПодсказка\n" + task.tip
 
     print(context.user_data)
 
     context.bot.edit_message_text(
-        text=text_condition_task,
+        text=text,
         chat_id=user_id,
         message_id=update.callback_query.message.message_id,
         parse_mode=ParseMode.HTML,
-        reply_markup=make_keyboard_for_task(queryset, task.id, callback, used_tip)
+        reply_markup=make_keyboard_for_task(task.id, callback, is_favourite_task, is_used_tip)
     )
 
     return 0
@@ -42,18 +47,21 @@ def add_tip(update: Update, context: CallbackContext) -> None:
     user = TelegramUser.objects.get(user_id=user_id)
 
     callback = context.user_data["callback_return_from_task"]
-    queryset = FavouriteTasks.objects.filter(user=user, task=task)
 
-    global text_condition_task, used_tip
-    used_tip = True
-    text_condition_task += "\n ПОДСКАЗКА: \n" + task.tip
+
+    is_favourite_task = FavouriteTasks.objects.filter(user=user, task=task).exists()
+
+    used_tip = UsedUserTip.objects.create(user=user, task=task)
+    used_tip.save()
+
+    text = task.description + "\nПодсказка\n" + task.tip
 
     context.bot.edit_message_text(
-        text=text_condition_task,
+        text=text,
         chat_id=user_id,
         message_id=update.callback_query.message.message_id,
         parse_mode=ParseMode.HTML,
-        reply_markup=make_keyboard_for_task(queryset, task.id, callback, used_tip)
+        reply_markup=make_keyboard_for_task(task.id, callback, is_favourite_task, True)
     )
 
 '''
@@ -110,6 +118,3 @@ def check_answer(update: Update, context: CallbackContext) -> None:
     )
     return 0
 '''
-    
-text_condition_task = ""
-used_tip = False
