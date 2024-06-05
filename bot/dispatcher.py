@@ -1,7 +1,7 @@
 from telegram.ext import (
     Dispatcher, Filters,
     CommandHandler, MessageHandler,
-    CallbackQueryHandler, ConversationHandler
+    CallbackQueryHandler, ConversationHandler, filters
 )
 
 from core.config.settings import DEBUG
@@ -9,6 +9,7 @@ from bot.main import bot
 
 
 from bot.handlers.begin.handlers import command_start, grade_create, grade_delete, main_menu
+from bot.handlers.command.handlers import change_grade, change_class
 from bot.handlers.favourite_task.handlers import open_list_favourite_tasks, delete_favourite_task, favourite_task_create, favourite_task_delete, create_for_solution_command, delete_for_solution_command
 from bot.handlers.presolution.handlers import select_subject, select_olympiad, select_group
 from bot.handlers.presolution.list_tasks.handlers import create_list_tasks
@@ -20,6 +21,9 @@ from bot.handlers.global_common.manage_data import CALLBACK_MAIN_MENU
 
 def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("start", command_start))
+
+    dp.add_handler(CommandHandler("change_class", change_class))
+    dp.add_handler(CallbackQueryHandler(change_grade, pattern=r"NEW_GRADE_\d+"))
 
     dp.add_handler(ConversationHandler(
         entry_points=[CallbackQueryHandler(open_task, pattern=r"TASK_\d+")],
