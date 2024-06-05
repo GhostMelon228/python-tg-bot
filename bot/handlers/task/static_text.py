@@ -5,3 +5,4 @@ text_for_wrong_answer = "К сожалению, ответ неверный. �
 text_return_to_list_tasks = "К задачам"
 text_try_again = "Попробовать ещё раз"
 text_show_solution = "Решение"
+text_show_solution_with_answer = "Показать решение и ответ"

@@ -51,7 +51,7 @@ def favourite_task_create(update: Update, context: CallbackContext) -> None:
     callback = context.user_data["callback_return_from_task"]
 
     
-    user, task = create_into_bd(user_id, update.callback_query.data.split('_')[-1])
+    user, task = create_into_bd(user_id, context.user_data["task_id"])
 
     is_used_tip = UsedUserTip.objects.filter(user=user, task=task).exists()
 
@@ -65,7 +65,7 @@ def favourite_task_create(update: Update, context: CallbackContext) -> None:
         chat_id=user_id,
         message_id=update.callback_query.message.message_id,
         parse_mode=ParseMode.HTML,
-        reply_markup=make_keyboard_for_task(task.id, callback, True, is_used_tip)
+        reply_markup=make_keyboard_for_task(context.user_data["unnormal_answer"], callback, True, is_used_tip)
     )
 
 
@@ -75,7 +75,7 @@ def create_for_solution_command(update: Update, context: CallbackContext) -> Non
     callback = context.user_data["callback_return_from_task"]
 
     
-    _, task = create_into_bd(user_id, update.callback_query.data.split('_')[-1])
+    _, task = create_into_bd(user_id, context.user_data["task_id"])
 
 
     context.bot.edit_message_text(
@@ -83,7 +83,7 @@ def create_for_solution_command(update: Update, context: CallbackContext) -> Non
         chat_id=user_id,
         message_id=update.callback_query.message.message_id,
         parse_mode=ParseMode.HTML,
-        reply_markup=make_keyboard_for_solution(task.pk, True, callback)
+        reply_markup=make_keyboard_for_solution(True, callback)
     )
 
 
@@ -107,7 +107,7 @@ def delete_favourite_task(update: Update, context: CallbackContext) -> None:
 
     user_id = extract_user_data_from_update(update)['user_id']
 
-    user, _ = delete_from_bd(user_id, update.callback_query.data.split('_')[-1])
+    user, _ = delete_from_bd(user_id, context.user_data["task_id"])
     queryset = FavouriteTasks.objects.filter(user=user)
 
     context.bot.edit_message_text(
@@ -125,7 +125,7 @@ def favourite_task_delete(update: Update, context: CallbackContext) -> None:
     callback = context.user_data["callback_return_from_task"]
 
     
-    user, task = delete_from_bd(user_id, update.callback_query.data.split('_')[-1])
+    user, task = delete_from_bd(user_id, context.user_data["task_id"])
 
     is_used_tip = UsedUserTip.objects.filter(user=user, task=task).exists()
 
@@ -139,7 +139,7 @@ def favourite_task_delete(update: Update, context: CallbackContext) -> None:
         chat_id=user_id,
         message_id=update.callback_query.message.message_id,
         parse_mode=ParseMode.HTML,
-        reply_markup=make_keyboard_for_task(task.id, callback, False, is_used_tip)
+        reply_markup=make_keyboard_for_task(context.user_data["unnormal_answer"], callback, False, is_used_tip)
     )
 
 
@@ -149,7 +149,7 @@ def delete_for_solution_command(update: Update, context: CallbackContext) -> Non
     callback = context.user_data["callback_return_from_task"]
 
     
-    _, task = delete_from_bd(user_id, update.callback_query.data.split('_')[-1])
+    _, task = delete_from_bd(user_id, context.user_data["task_id"])
 
 
     context.bot.edit_message_text(
@@ -157,5 +157,5 @@ def delete_for_solution_command(update: Update, context: CallbackContext) -> Non
         chat_id=user_id,
         message_id=update.callback_query.message.message_id,
         parse_mode=ParseMode.HTML,
-        reply_markup=make_keyboard_for_solution(task.pk, False, callback)
+        reply_markup=make_keyboard_for_solution(False, callback)
     )

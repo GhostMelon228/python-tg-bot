@@ -9,7 +9,7 @@ from bot.handlers.task.manage_data import *
 
 
 
-def make_keyboard_for_task(task, callback, is_favourite_task, is_used_tip) -> InlineKeyboardMarkup:
+def make_keyboard_for_task(unnormal_answer, callback, is_favourite_task, is_used_tip) -> InlineKeyboardMarkup:
 
     buttons = []
 
@@ -17,7 +17,7 @@ def make_keyboard_for_task(task, callback, is_favourite_task, is_used_tip) -> In
         buttons.append(
             [InlineKeyboardButton(
                 text=text_delete_favourite_task,
-                callback_data=CALLBACK_DELETE_FAVOURITE_TASK.format(pk=task)
+                callback_data=CALLBACK_DELETE_FAVOURITE_TASK
             )]
         )
     
@@ -25,7 +25,7 @@ def make_keyboard_for_task(task, callback, is_favourite_task, is_used_tip) -> In
         buttons.append(
             [InlineKeyboardButton(
                 text=text_create_favourite_task,
-                callback_data=CALLBACK_CREATE_FAVOURITE_TASK.format(pk=task)
+                callback_data=CALLBACK_CREATE_FAVOURITE_TASK
             )]
         )
 
@@ -33,7 +33,15 @@ def make_keyboard_for_task(task, callback, is_favourite_task, is_used_tip) -> In
         buttons.append(
             [InlineKeyboardButton(
                 text=text_add_tip,
-                callback_data=CALLBACK_ADD_TIP.format(pk = task)
+                callback_data=CALLBACK_ADD_TIP
+            )]
+        )
+
+    if unnormal_answer:
+        buttons.append(
+            [InlineKeyboardButton(
+                text=text_show_solution_with_answer,
+                callback_data=CALLBACK_REDIRECT_TASK_WITH_UNNNORMAL_ANSWER_TO_SOLUTION
             )]
         )
 
@@ -72,7 +80,7 @@ def make_keyboard_for_wrong_answer(task, callback):
     buttons.append(
         [InlineKeyboardButton(
             text=text_show_solution,
-            callback_data=CALLBACK_SHOW_SOLUTION.format(pk=task)
+            callback_data=CALLBACK_SHOW_SOLUTION
         )]
     )
     buttons.append(
@@ -84,7 +92,7 @@ def make_keyboard_for_wrong_answer(task, callback):
 
     return InlineKeyboardMarkup(buttons)
 
-def make_keyboard_for_solution(task, is_favourite_task, callback):
+def make_keyboard_for_solution(is_favourite_task, callback):
     
     buttons = []
 
@@ -92,14 +100,14 @@ def make_keyboard_for_solution(task, is_favourite_task, callback):
         buttons.append(
             [InlineKeyboardButton(
                 text=text_delete_favourite_task,
-                callback_data=CALLBACK_DELETE_FAVOURITE_TASK.format(pk=task)
+                callback_data=CALLBACK_DELETE_FAVOURITE_TASK
             )]
         )
     else:
         buttons.append(
             [InlineKeyboardButton(
                 text=text_create_favourite_task,
-                callback_data=CALLBACK_CREATE_FAVOURITE_TASK.format(pk=task)
+                callback_data=CALLBACK_CREATE_FAVOURITE_TASK
             )]
         )
     buttons.append(

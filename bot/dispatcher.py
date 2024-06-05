@@ -13,9 +13,10 @@ from bot.handlers.command.handlers import change_grade, change_class
 from bot.handlers.favourite_task.handlers import open_list_favourite_tasks, delete_favourite_task, favourite_task_create, favourite_task_delete, create_for_solution_command, delete_for_solution_command
 from bot.handlers.presolution.handlers import select_subject, select_olympiad, select_group
 from bot.handlers.presolution.list_tasks.handlers import create_list_tasks
-from bot.handlers.task.handlers import open_task, add_tip, check_answer, show_solution
+from bot.handlers.task.handlers import open_task, add_tip, check_answer, show_solution, redirect_task_with_unnormal_answer
 
 from bot.handlers.begin.manage_data import CALLBACK_OPEN_FAVOURITE_TASKS, CALLBACK_START_SOLVING
+from bot.handlers.task.manage_data import CALLBACK_ADD_TIP, CALLBACK_REDIRECT_TASK_WITH_UNNNORMAL_ANSWER_TO_SOLUTION, CALLBACK_CREATE_FAVOURITE_TASK, CALLBACK_DELETE_FAVOURITE_TASK, CALLBACK_SHOW_SOLUTION
 from bot.handlers.global_common.manage_data import CALLBACK_MAIN_MENU
 
 
@@ -28,15 +29,16 @@ def setup_dispatcher(dp):
     dp.add_handler(ConversationHandler(
         entry_points=[CallbackQueryHandler(open_task, pattern=r"TASK_\d+")],
         states={
-            0:[CallbackQueryHandler(add_tip, pattern=r"UNLOCK_TIP_\d+"),
-               CallbackQueryHandler(favourite_task_create, pattern=r"CREATE_FAVOURITE_TASK_\d+"),
-               CallbackQueryHandler(favourite_task_delete, pattern=r"DELETE_FAVOURITE_TASK_\d+"),
+            0:[CallbackQueryHandler(add_tip, pattern=CALLBACK_ADD_TIP),
+               CallbackQueryHandler(favourite_task_create, pattern=CALLBACK_CREATE_FAVOURITE_TASK),
+               CallbackQueryHandler(favourite_task_delete, pattern=CALLBACK_DELETE_FAVOURITE_TASK),
+               CallbackQueryHandler(redirect_task_with_unnormal_answer, pattern=CALLBACK_REDIRECT_TASK_WITH_UNNNORMAL_ANSWER_TO_SOLUTION),
                MessageHandler(Filters.text & ~Filters.command, check_answer)
                ],
             1:[CallbackQueryHandler(open_task, pattern=r"TASK_\d+"),
-               CallbackQueryHandler(show_solution, pattern=r"SOLUTION_FOR_TASK_\d+"),
-               CallbackQueryHandler(create_for_solution_command, pattern=r"CREATE_FAVOURITE_TASK_\d+"),
-               CallbackQueryHandler(delete_for_solution_command, pattern=r"DELETE_FAVOURITE_TASK_\d+")]
+               CallbackQueryHandler(show_solution, pattern=CALLBACK_SHOW_SOLUTION),
+               CallbackQueryHandler(create_for_solution_command, pattern=CALLBACK_CREATE_FAVOURITE_TASK),
+               CallbackQueryHandler(delete_for_solution_command, pattern=CALLBACK_DELETE_FAVOURITE_TASK)]
         },
         fallbacks=[CallbackQueryHandler(create_list_tasks, pattern=r"OBJECT_\d+_\d+"),
                    CallbackQueryHandler(open_list_favourite_tasks, pattern=CALLBACK_OPEN_FAVOURITE_TASKS)]
