@@ -30,7 +30,6 @@ def command_start(update: Update, context: CallbackContext):
 
         reply_markup = make_keyboard_for_used_start_command()
 
-    
     update.message.reply_text(
         text=text,
         reply_markup=reply_markup

@@ -92,10 +92,24 @@ def make_keyboard_for_wrong_answer(task, callback):
 
     return InlineKeyboardMarkup(buttons)
 
-def make_keyboard_for_solution(is_favourite_task, callback):
+def make_keyboard_for_solution(is_favourite_task, show_two_btns, callback):
     
     buttons = []
 
+    if show_two_btns:
+        buttons.append(
+            [InlineKeyboardButton(
+                text=text_ask_get_user_true_answer,
+                callback_data=CALLBACK_ADD_TRUE_USER_TRY
+            )]
+        )
+        buttons.append(
+            [InlineKeyboardButton(
+                text=text_ask_get_user_wrong_answer,
+                callback_data=CALLBACK_ADD_WRONG_USER_TRY
+            )]
+        )
+    
     if is_favourite_task:
         buttons.append(
             [InlineKeyboardButton(

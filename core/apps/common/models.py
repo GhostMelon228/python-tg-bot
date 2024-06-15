@@ -34,14 +34,13 @@ class FavouriteTasks(BaseModel):
     def __str__(self):
         return f"Закладка задачи №{self.pk}"
     
-class UserAnswer(BaseModel):
+class UserTry(BaseModel):
     user = models.ForeignKey(TelegramUser, on_delete=models.PROTECT,
                              verbose_name="Пользователь", related_name="user_tries")
     task = models.ForeignKey(Task, on_delete=models.PROTECT,
                              verbose_name="Задача", related_name="user_tries")
     STATUS_CHOICES = [
         ('NA', '_'),
-        ('PC', 'Решается'),
         ('WA', 'Неправильно'),
         ('OK', 'Правильно')
     ]
@@ -55,7 +54,31 @@ class UserAnswer(BaseModel):
 
     def __str__(self):
         return f"Попытка {self.pk}"
+
+
+class UserTaskEnroll(BaseModel):
+    user = models.ForeignKey(TelegramUser, on_delete=models.PROTECT,
+                             verbose_name="Пользователь", related_name="user_task_enroll")
+    task = models.ForeignKey(Task, on_delete=models.PROTECT,
+                             verbose_name="Задача", related_name="user_task_enroll")
+    STATUS_CHOICES = [
+        ('NA', '_'),
+        ('PC', 'Решается'),
+        ('WA', 'Неправильно'),
+        ('OK', 'Правильно')
+    ]
+    status = models.CharField(
+        verbose_name="Состояние задачи", max_length=15, choices=STATUS_CHOICES, default='NA', blank=True)
+
+    class Meta:
+        verbose_name = "Ответ пользователя"
+        verbose_name_plural = "Ответы пользователей"
+        ordering = ["pk"]
+
+    def __str__(self):
+        return f"{self.pk}"
     
+
 class UsedUserTip(BaseModel):
     user = models.ForeignKey(
         TelegramUser, on_delete= models.PROTECT,

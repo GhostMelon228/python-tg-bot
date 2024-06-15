@@ -2,7 +2,7 @@ from telegram import ParseMode, Update
 from telegram.ext import CallbackContext
 
 from core.apps.users.models import TelegramUser, extract_user_data_from_update
-from core.apps.common.models import FavouriteTasks, UsedUserTip
+from core.apps.common.models import FavouriteTasks, UsedUserTip, UserTaskEnroll
 from core.apps.minor.models import Task
 
 from bot.handlers.task.keyboards import make_keyboard_for_task, make_keyboard_for_solution
@@ -75,15 +75,19 @@ def create_for_solution_command(update: Update, context: CallbackContext) -> Non
     callback = context.user_data["callback_return_from_task"]
 
     
-    _, task = create_into_bd(user_id, context.user_data["task_id"])
+    user, task = create_into_bd(user_id, context.user_data["task_id"])
 
+    show_2_btn = False
+
+    if context.user_data["unnormal_answer"] and UserTaskEnroll.objects.get(user=user, task=task).status == "PC":
+        show_2_btn = True
 
     context.bot.edit_message_text(
         text="РЕШЕНИЕ:\n\n" + task.solving,
         chat_id=user_id,
         message_id=update.callback_query.message.message_id,
         parse_mode=ParseMode.HTML,
-        reply_markup=make_keyboard_for_solution(True, callback)
+        reply_markup=make_keyboard_for_solution(True, show_2_btn, callback)
     )
 
 
@@ -149,13 +153,17 @@ def delete_for_solution_command(update: Update, context: CallbackContext) -> Non
     callback = context.user_data["callback_return_from_task"]
 
     
-    _, task = delete_from_bd(user_id, context.user_data["task_id"])
+    user, task = delete_from_bd(user_id, context.user_data["task_id"])
 
+    show_2_btn = False
+
+    if context.user_data["unnormal_answer"] and UserTaskEnroll.objects.get(user=user, task=task).status == "PC":
+        show_2_btn = True
 
     context.bot.edit_message_text(
         text="РЕШЕНИЕ:\n\n" + task.solving,
         chat_id=user_id,
         message_id=update.callback_query.message.message_id,
         parse_mode=ParseMode.HTML,
-        reply_markup=make_keyboard_for_solution(False, callback)
+        reply_markup=make_keyboard_for_solution(False, show_2_btn, callback)
     )

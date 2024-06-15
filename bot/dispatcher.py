@@ -13,10 +13,10 @@ from bot.handlers.command.handlers import change_grade, change_class
 from bot.handlers.favourite_task.handlers import open_list_favourite_tasks, delete_favourite_task, favourite_task_create, favourite_task_delete, create_for_solution_command, delete_for_solution_command
 from bot.handlers.presolution.handlers import select_subject, select_olympiad, select_group
 from bot.handlers.presolution.list_tasks.handlers import create_list_tasks
-from bot.handlers.task.handlers import open_task, add_tip, check_answer, show_solution, redirect_task_with_unnormal_answer
+from bot.handlers.task.handlers import open_task, add_tip, check_answer, add_true_user_answer, add_wrong_user_answer, show_solution, redirect_task_with_unnormal_answer
 
 from bot.handlers.begin.manage_data import CALLBACK_OPEN_FAVOURITE_TASKS, CALLBACK_START_SOLVING
-from bot.handlers.task.manage_data import CALLBACK_ADD_TIP, CALLBACK_REDIRECT_TASK_WITH_UNNNORMAL_ANSWER_TO_SOLUTION, CALLBACK_CREATE_FAVOURITE_TASK, CALLBACK_DELETE_FAVOURITE_TASK, CALLBACK_SHOW_SOLUTION
+from bot.handlers.task.manage_data import CALLBACK_ADD_TRUE_USER_TRY, CALLBACK_ADD_WRONG_USER_TRY, CALLBACK_ADD_TIP, CALLBACK_REDIRECT_TASK_WITH_UNNNORMAL_ANSWER_TO_SOLUTION, CALLBACK_CREATE_FAVOURITE_TASK, CALLBACK_DELETE_FAVOURITE_TASK, CALLBACK_SHOW_SOLUTION
 from bot.handlers.global_common.manage_data import CALLBACK_MAIN_MENU
 
 
@@ -38,6 +38,8 @@ def setup_dispatcher(dp):
             1:[CallbackQueryHandler(open_task, pattern=r"TASK_\d+"),
                CallbackQueryHandler(show_solution, pattern=CALLBACK_SHOW_SOLUTION),
                CallbackQueryHandler(create_for_solution_command, pattern=CALLBACK_CREATE_FAVOURITE_TASK),
+               CallbackQueryHandler(add_true_user_answer, pattern=CALLBACK_ADD_TRUE_USER_TRY),
+               CallbackQueryHandler(add_wrong_user_answer, pattern=CALLBACK_ADD_WRONG_USER_TRY),
                CallbackQueryHandler(delete_for_solution_command, pattern=CALLBACK_DELETE_FAVOURITE_TASK)]
         },
         fallbacks=[CallbackQueryHandler(create_list_tasks, pattern=r"OBJECT_\d+_\d+"),

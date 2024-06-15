@@ -109,7 +109,7 @@ class Task(BaseModel):
         Grade, on_delete=models.PROTECT, verbose_name="Класс", related_name="tasks"
     )
     description = models.TextField(
-        verbose_name="Условие задачи", max_length=1000,
+        verbose_name="Условие задачи", max_length=1000, blank=True
     )
     tip = models.TextField(
         verbose_name="Подсказка", max_length=1000,
@@ -119,6 +119,12 @@ class Task(BaseModel):
     )
     solving = models.TextField(
         verbose_name="Решение", max_length=10000,
+    )
+    image_description = models.ImageField(
+        verbose_name="Фото описания", upload_to="media/description", blank=True
+    )
+    image_solution = models.ImageField(
+        verbose_name="Фото решения", upload_to="media/solution", blank=True
     )
 
     class Meta:
