@@ -39,19 +39,20 @@ def open_task(update: Update, context: CallbackContext) -> None:
 
     if is_used_tip:
         text += "\nПодсказка\n" + task.tip
-    
+
     if task.image_description:
-        context.bot.edit_message_media(
+        context.bot.send_photo(
             chat_id=user_id,
-            message_id=update.callback_query.message.message_id,
-            media=open(task.image_description.name, 'rb')
+            photo=task.image_description,
         )
+    print(text)
+    print(context.user_data)
     context.bot.edit_message_text(
         text=text,
         chat_id=user_id,
         message_id=update.callback_query.message.message_id,
         parse_mode=ParseMode.HTML,
-        reply_markup=make_keyboard_for_task(context.user_data["unnormal_answer"], callback, is_favourite_task, is_used_tip)
+        reply_markup=make_keyboard_for_task(context.user_data["unnormal_answer"], callback, is_favourite_task, is_used_tip),
     )
 
     return 0

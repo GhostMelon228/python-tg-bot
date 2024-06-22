@@ -12,6 +12,7 @@ from bot.handlers.presolution.list_tasks.keyboards import make_keyboard_for_task
 def create_list_tasks(update: Update, context: CallbackContext) -> None:
 
     context.user_data.pop("message_id", None)
+    context.user_data.pop("unnormal_answer", None)
     come_back = context.user_data.pop("task_id", 0)
 
     user_id = extract_user_data_from_update(update)['user_id']
@@ -49,7 +50,7 @@ def create_list_tasks(update: Update, context: CallbackContext) -> None:
         ).order_by("-year__number")
 
     olymp = Olympiad.objects.get(id=olympiad_id)
-
+    print(context.user_data)
     context.bot.edit_message_text(
         text=text,
         chat_id=user_id,

@@ -29,7 +29,7 @@ def command_start(update: Update, context: CallbackContext):
         text = static_text.start_not_created.format(first_name=user.first_name)
 
         reply_markup = make_keyboard_for_used_start_command()
-
+    print(context.user_data)
     update.message.reply_text(
         text=text,
         reply_markup=reply_markup
@@ -97,7 +97,7 @@ def main_menu(update: Update, context: CallbackContext) -> None:
     context.user_data.pop("subject_id", None)
     context.user_data.clear()
     
-
+    print(context.user_data)
     context.bot.edit_message_text(
         text=static_text.start_not_created.format(first_name=user.first_name),
         chat_id=user_id,

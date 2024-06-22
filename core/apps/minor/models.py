@@ -121,10 +121,10 @@ class Task(BaseModel):
         verbose_name="Решение", max_length=10000,
     )
     image_description = models.ImageField(
-        verbose_name="Фото описания", upload_to="media/description", blank=True
+        verbose_name="Фото описания", upload_to="description", blank=True
     )
     image_solution = models.ImageField(
-        verbose_name="Фото решения", upload_to="media/solution", blank=True
+        verbose_name="Фото решения", upload_to="solution", blank=True
     )
 
     class Meta:

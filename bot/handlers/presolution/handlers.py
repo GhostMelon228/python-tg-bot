@@ -18,7 +18,7 @@ def select_subject(update: Update, context: CallbackContext) -> None:
 
 
     subjects = Subject.objects.filter(grades__connection_user_to_grade__user=TelegramUser.objects.get(user_id=user_id))
-
+    print(context.user_data)
     context.bot.edit_message_text(
         text=text_for_select_subjects,
         chat_id=user_id,
@@ -36,7 +36,7 @@ def select_olympiad(update: Update, context: CallbackContext) -> None:
 
     context.user_data["subject_id"] = subject
 
-
+    print(context.user_data)
     olympiads = Olympiad.objects.filter(subjects=subject, grades__connection_user_to_grade__user=TelegramUser.objects.get(user_id=user_id))
     context.bot.edit_message_text(
         text=text_for_select_olympiad,
@@ -62,18 +62,18 @@ def select_group(update: Update, context: CallbackContext) -> None:
 
     if type_sort == "0":  #если надо сгруппировать по Году
 
-        tasks = Year.objects.filter(tasks__subject=subject_id, tasks__olympiad=olympiad_id).distinct()
+        tasks = Year.objects.filter(tasks__subject=subject_id, tasks__olympiad=olympiad_id).distinct().order_by("-number")
         text_btn = text_for_switch_to_method
         text_sort = text_years_grouping
 
         
     else: #если - по Методу
 
-        tasks = SolveMethod.objects.filter(tasks__subject=subject_id, tasks__olympiad=olympiad_id).distinct()
+        tasks = SolveMethod.objects.filter(tasks__subject=subject_id, tasks__olympiad=olympiad_id).distinct().order_by("title")
         text_btn = text_for_switch_to_year
         text_sort = text_method_grouping
 
-
+    print(context.user_data)
     tasks = list(tasks)
     context.bot.edit_message_text(
         text=text_sort,
