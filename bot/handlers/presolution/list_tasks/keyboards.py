@@ -6,7 +6,7 @@ from core.apps.minor.models import Task
 
 
 from bot.handlers.global_common.manage_data import CALLBACK_OPEN_TASK
-from bot.handlers.global_common.static_text import text_return_previous
+from bot.handlers.global_common.static_text import text_return_previous, correct, wrong
 
 from bot.handlers.presolution.manage_data import CALLBACK_SELECT_OLYMPIAD, CALLBACK_SELECT_GROUP
 from bot.handlers.presolution.static_text import text_arrow_next, text_arrow_previous
@@ -16,9 +16,18 @@ def make_keyboard_for_tasks(tasks: QuerySet[Task], from_, del_, select_group, ol
     arrows = []
 
     for task in tasks[from_:from_+del_]:
+
+        enrolls = task.user_task_enroll.all()
+        status = [enroll.status for enroll in enrolls]
+
+        text = task.title
+
+        if len(status) and status[0] == 'OK':
+            text += " " + correct
+        
         buttons.append(
             [InlineKeyboardButton(
-                text=task.title,
+                text=text,
                 callback_data=CALLBACK_OPEN_TASK.format(pk=task.id)
             )]
         )
@@ -30,6 +39,7 @@ def make_keyboard_for_tasks(tasks: QuerySet[Task], from_, del_, select_group, ol
                 callback_data=CALLBACK_SELECT_GROUP.format(pk=select_group, from_=from_ - del_)
             )
         )
+        
     if from_ + del_ < tasks.count():
         arrows.append(
             InlineKeyboardButton(

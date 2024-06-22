@@ -1,8 +1,11 @@
+from django.db.models import Prefetch
+
 from telegram import ParseMode, Update
 from telegram.ext import CallbackContext, ConversationHandler
 
 from core.apps.users.models import TelegramUser, extract_user_data_from_update
 from core.apps.minor.models import Task, SolveMethod, Year, Olympiad
+from core.apps.common.models import UserTaskEnroll
 
 from bot.handlers.presolution.static_text import text_for_tasks_method, text_for_tasks_year
 
@@ -35,7 +38,7 @@ def create_list_tasks(update: Update, context: CallbackContext) -> None:
             olympiad=olympiad_id,
             solve_method = int(select_group_id),
             grade__connection_user_to_grade__user=TelegramUser.objects.get(user_id=user_id)
-        ).order_by("-solve_method__title")
+        ).prefetch_related(Prefetch("user_task_enroll", queryset=UserTaskEnroll.objects.filter(user=TelegramUser.objects.get(user_id=user_id)))).order_by("-solve_method__title")
     
 
     else: #если выбранная группа - год
@@ -47,10 +50,21 @@ def create_list_tasks(update: Update, context: CallbackContext) -> None:
             olympiad=olympiad_id,
             year = int(select_group_id),
             grade__connection_user_to_grade__user=TelegramUser.objects.get(user_id=user_id)
-        ).order_by("-year__number")
+        ).prefetch_related(Prefetch("user_task_enroll", queryset=UserTaskEnroll.objects.filter(user=TelegramUser.objects.get(user_id=user_id)))).order_by("-year__number")
+
 
     olymp = Olympiad.objects.get(id=olympiad_id)
     print(context.user_data)
+
+
+    # удаляем сообщения с заданиями и картинками
+
+    for id in context.user_data.get("delete_messages", []):
+        context.bot.delete_message(chat_id=user_id, message_id=id)
+    context.user_data["delete_messages"] = []
+
+
+
     context.bot.edit_message_text(
         text=text,
         chat_id=user_id,
@@ -58,6 +72,8 @@ def create_list_tasks(update: Update, context: CallbackContext) -> None:
         parse_mode=ParseMode.HTML,
         reply_markup=make_keyboard_for_tasks(tasks, int(from_), olymp.tasks_in_variant, select_group_id, olympiad_id, grouping_tasks)
     )
+
+    # если перешли через кнопку "Назад", то завершаем диалог
 
     if come_back:
         return ConversationHandler.END

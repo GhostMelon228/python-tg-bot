@@ -8,7 +8,6 @@ from core.apps.common.models import FavouriteTasks, UserTry, UsedUserTip, UserTa
 from bot.handlers.global_common.static_text import name_answer_for_task_with_unnormal_answer
 from bot.handlers.task.keyboards import *
 
-from typing import Literal
 
 def open_task(update: Update, context: CallbackContext) -> None:
 
@@ -16,6 +15,7 @@ def open_task(update: Update, context: CallbackContext) -> None:
     callback = context.user_data["callback_return_from_task"]
 
     task_id = update.callback_query.data.split('_')[-1]
+    retrying = context.user_data.get("task_id", 0)
     context.user_data["task_id"] = task_id
     context.user_data["message_id"] = update.callback_query.message.message_id
     context.user_data["unnormal_answer"] = False
@@ -40,12 +40,13 @@ def open_task(update: Update, context: CallbackContext) -> None:
     if is_used_tip:
         text += "\nПодсказка\n" + task.tip
 
-    if task.image_description:
-        context.bot.send_photo(
+    if task.image_description and not retrying: # если в задании есть картинка, и оно не открыается повторно; то отправим эту картинку
+        message = context.bot.send_photo(
             chat_id=user_id,
             photo=task.image_description,
         )
-    print(text)
+        context.user_data["delete_messages"] = context.user_data.get("delete_messages", []) + [message.message_id]
+
     print(context.user_data)
     context.bot.edit_message_text(
         text=text,
@@ -74,21 +75,14 @@ def add_tip(update: Update, context: CallbackContext) -> None:
 
     text = task.description + "\nПодсказка\n" + task.tip
 
-    if task.image_description:
-        context.bot.send_photo(
-            chat_id=user_id,
-            photo=open(task.image_description.name, 'rb'),
-            caption=text,
-            reply_markup=make_keyboard_for_task(context.user_data["unnormal_answer"], callback, is_favourite_task, True)
-        )
-    else:
-        context.bot.edit_message_text(
-            text=text,
-            chat_id=user_id,
-            message_id=update.callback_query.message.message_id,
-            parse_mode=ParseMode.HTML,
-            reply_markup=make_keyboard_for_task(context.user_data["unnormal_answer"], callback, is_favourite_task, True)
-        )
+
+    context.bot.edit_message_text(
+        text=text,
+        chat_id=user_id,
+        message_id=update.callback_query.message.message_id,
+        parse_mode=ParseMode.HTML,
+        reply_markup=make_keyboard_for_task(context.user_data["unnormal_answer"], callback, is_favourite_task, True)
+    )
 
 
 def check_answer(update: Update, context: CallbackContext) -> None:
@@ -160,6 +154,13 @@ def show_solution(update: Update, context: CallbackContext) -> None:
 
     if context.user_data["unnormal_answer"] and UserTaskEnroll.objects.get(user=user, task=task).status == "PC":
         show_2_btn = True
+    
+    if task.image_solution:
+        message = context.bot.send_photo(
+            chat_id=user_id,
+            photo=task.image_solution,
+        )
+        context.user_data["delete_messages"] = context.user_data.get("delete_messages", []) + [message.message_id]
 
     context.bot.edit_message_text(
         text="РЕШЕНИЕ:\n\n" + task.solving,
